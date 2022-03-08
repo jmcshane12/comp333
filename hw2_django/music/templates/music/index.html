@@ -1,0 +1,22 @@
+
+<h1>music_db</h1>
+  <hr>
+  <h2>Registration</h2>
+
+  <form method="POST" action= "{% url 'music:registration' %}">
+  {% csrf_token %}
+  Username: <input type="text" name="username_register" /><br>
+  Password: <input type="text" name="password" /><br>
+  <input type="submit" name="register" value="Register"/>
+  </form>
+  {{user_error}}
+  <br>
+  <br>
+  <hr>
+
+  <h2>Retrieve Songs by Username</h2>
+
+  <form method="POST" action=""> <!-- TODO: set action to send POST to 'music:retrieve' -->
+  Username: <input type="text" name="username" /><br>
+  <input type="submit" name="retrieve" value="Submit"/>
+  <!-- TODO: add py code to show the ratings from views.retrieve -->
