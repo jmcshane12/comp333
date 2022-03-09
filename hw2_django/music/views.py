@@ -5,8 +5,7 @@ from django.urls import reverse
 from .models import User, Song, Rating
 
 def index(request): # view for home page
-    template = loader.get_template('music/index.html')
-    return HttpResponse(template.render({'error_message': False}, request))
+    return render(request, 'music/index.html', {'user_error': ""})
 
 def registration(request): # view that handles new user registration to database, shows error msg on failure, redirects to index on success
     reg_username = request.POST['username_register']
