@@ -1,0 +1,17 @@
+<h1>Retrieve Reviewed Songs by Username</h1>
+
+<form method="POST" action="{% url 'music:song_retrieve' %}">
+{% csrf_token %}
+Username: <input type="text" name="username" /><br>
+<input type="submit" name="song_retrieve" value="Retrieve"/>
+</form>
+{{user_error}}
+<br>
+<hr>
+{% for review in user.rating_set.all %}
+    <p>{{review.song}} --> {{review.rating}}</p>
+    <br>
+{% endfor %}
+
+
+
