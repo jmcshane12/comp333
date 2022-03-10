@@ -12,7 +12,13 @@ See "readme-sql.md".
 
 ### Problem 1b:
 
-holder
+1. Download index.php and music-style.css.
+2. Go to the xampp/htdocs folder.
+3. Place the index.php and music-style.css files in the xampp/htdocs folder.
+4. Open the XAMPP Control Panel.
+5. Under Actions, click the Start button for both the Apache and MySQL modules.
+6. Open a web browser.
+7. Go to localhost:8080.
 
 ### Problem 2:
 
