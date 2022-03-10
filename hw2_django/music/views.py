@@ -38,8 +38,7 @@ def song_retrieve(request):
         username = request.POST['username']
         user = get_object_or_404(User, pk=username)
 
-        #return HttpResponseRedirect(reverse('music:song_retrieve'))
-        return render(request, 'music/song_retrieve.html', {'user': user}) # not sure how to do the reverse and also pass along the correct variable i.e the user so just using render for now
+        return render(request, 'music/song_retrieve.html', {'user': user})
     
     else:
         # If just a GET request then just show the song lookup page 
@@ -72,8 +71,7 @@ def year_retrieve(request):
                 avg_score = total / song.rating_set.all().count()
                 songs[song.song_name] = 'Average Rating --> ' + str(avg_score) + ". " + pop
         
-        #return HttpResponseRedirect(reverse('music:year_retrieve'))
-        return render(request, 'music/year_retrieve.html', {'songs': songs}) # not sure how to do the reverse and also pass along the correct variable i.e the year so just using render for now
+        return render(request, 'music/year_retrieve.html', {'songs': songs}) 
 
     else:
         # If just a GET request then just show the year lookup page 
