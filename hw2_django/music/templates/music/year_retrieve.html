@@ -1,3 +1,7 @@
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'music/style.css' %}">
+
 <h1>Retrieve Reviewed Songs by Year</h1>
 
 <form method="POST" action="{% url 'music:year_retrieve' %}">
@@ -9,7 +13,8 @@ Year: <input type="text" name="year" />
 <hr>
 {{alert}}
 
+<ul>
 {% for name, info in songs.items %}
-    <p>{{name}} : {{info}}</p>
-    <br>
+    <li>{{name}} : {{info}}</li>
 {% endfor %}
+</ul>

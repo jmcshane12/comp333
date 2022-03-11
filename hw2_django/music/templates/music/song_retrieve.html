@@ -1,3 +1,7 @@
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'music/style.css' %}">
+
 <h1>Retrieve Reviewed Songs by Username</h1>
 
 <form method="POST" action="{% url 'music:song_retrieve' %}">
@@ -9,9 +13,9 @@ Username: <input type="text" name="username"/>
 <hr>
 {{alert}}
 
+<ul>
 {% for review in user.rating_set.all %}
-    <p>{{review.song}} by {{review.song.artist}} --> {{review.rating}}</p>
+<li>{{review.song}} by {{review.song.artist}} --> {{review.rating}}</li>
 {% endfor %}
-
-
+</ul>
 
