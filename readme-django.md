@@ -69,6 +69,10 @@ r1 = Rating(user=u1, song=s1, rating=3)
 r2 = Rating(user=u1, song=s2, rating=4)
 r3 = Rating(user=u2, song=s2, rating=5)
 r4 = Rating(user=u1, song=s3, rating=4)
+r1.save()
+r2.save()
+r3.save()
+r4.save()
 ```
 
 ## 4. Run the server 
