@@ -3,6 +3,32 @@ from django.template import loader
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from .models import User, Song, Rating, Year
+from rest_framework import viewsets
+from .serializers import UserSerializer, SongSerializer, YearSerializer, RatingSerializer
+
+class UserView(viewsets.ModelViewSet):
+  # Create a new TodoSerializer instance.
+  serializer_class = UserSerializer
+  # Todo.objects.all() retrieves all the Todo objects in the database.
+  queryset = User.objects.all()
+
+class SongView(viewsets.ModelViewSet):
+  # Create a new TodoSerializer instance.
+  serializer_class = SongSerializer
+  # Todo.objects.all() retrieves all the Todo objects in the database.
+  queryset = Song.objects.all()
+
+class RatingView(viewsets.ModelViewSet):
+  # Create a new TodoSerializer instance.
+  serializer_class = RatingSerializer
+  # Todo.objects.all() retrieves all the Todo objects in the database.
+  queryset = Year.objects.all()
+
+class YearView(viewsets.ModelViewSet):
+  # Create a new TodoSerializer instance.
+  serializer_class = YearSerializer
+  # Todo.objects.all() retrieves all the Todo objects in the database.
+  queryset = Rating.objects.all()
 
 # view for home page
 def index(request):
@@ -101,6 +127,4 @@ def year_retrieve(request):
     else:
         # If just a GET request then just show the year_retrieve template
         return render(request, 'music/year_retrieve.html')
-
-
 
