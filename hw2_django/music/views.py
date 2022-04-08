@@ -22,13 +22,14 @@ class RatingView(viewsets.ModelViewSet):
   # Create a new TodoSerializer instance.
   serializer_class = RatingSerializer
   # Todo.objects.all() retrieves all the Todo objects in the database.
-  queryset = Year.objects.all()
+  queryset = Rating.objects.all()
+  
 
 class YearView(viewsets.ModelViewSet):
   # Create a new TodoSerializer instance.
   serializer_class = YearSerializer
   # Todo.objects.all() retrieves all the Todo objects in the database.
-  queryset = Rating.objects.all()
+  queryset = Year.objects.all()
 
 # view for home page
 def index(request):
