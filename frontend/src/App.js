@@ -8,10 +8,11 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     // The state object is initialized in the constructor of the component.
-    // It has three properties: viewCompleted, activeItem, and todoList.
+    // It has seven properties: activeSong, newSong, editSong, songList, ratingList, yearList, and
     this.state = {
       activeSong: {song_name: "", artist: ""},
       newSong: false,
+      editSong: false,
       songList: [],
       ratingList: [],
       yearList: [],
@@ -52,10 +53,16 @@ class App extends React.Component {
       .catch(err => console.log(err));
   };
 
-  handleDelete(name){
+  handleDelete(name, year){ //Deletes song from database; deletes year from database if only one song with said year exists
+    const songWithYearList = this.state.songList.filter(song => song.year === year)
     axios
       .delete(`http://localhost:8000/api/songs/${name}`)
       .then(res => this.refreshList());
+    if (songWithYearList.length === 1){
+      axios
+      .delete(`http://localhost:8000/api/years/${year}`)
+      .then(res => this.refreshList());
+    }
   }
 
   handleNewSongSubmit(e){ //Posts new song from the new song form to database
@@ -104,7 +111,7 @@ class App extends React.Component {
           <td>{song.year}</td>
           <td>{song.genre}</td>
           <td><button onClick={() => this.setState({activeSong: {song_name: song.song_name, artist: song.artist}})}>Edit</button></td>
-          <td><button onClick={() => this.handleDelete(song.song_name)}>Delete</button></td>
+          <td><button onClick={() => this.handleDelete(song.song_name, song.year)}>Delete</button></td>
         </tr>)
       
     );
@@ -112,7 +119,7 @@ class App extends React.Component {
 
   renderSongEdit(){ //TODO: implement the part of the page where user edits songs/ratings (currently just prints the song name)
     return(
-      this.state.activeSong.song_name != "" && <h1>{this.state.activeSong.song_name}</h1>);
+      this.state.activeSong.song_name !== "" && <h1>{this.state.activeSong.song_name}</h1>);
   }
 
   renderNewSong(){
