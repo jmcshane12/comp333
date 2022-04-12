@@ -10,7 +10,7 @@ class App extends React.Component {
     // The state object is initialized in the constructor of the component.
     // It has seven properties: activeSong, newSong, editSong, songList, ratingList, yearList, and
     this.state = {
-      activeSong: {song_name: "", artist: ""},
+      activeSong: {song_name: "", artist: "", genre: "", year: ""},
       newSong: false,
       editSong: false,
       songList: [],
@@ -56,12 +56,77 @@ class App extends React.Component {
   handleDelete(name, year){ //Deletes song from database; deletes year from database if only one song with said year exists
     const songWithYearList = this.state.songList.filter(song => song.year === year)
     axios
-      .delete(`http://localhost:8000/api/songs/${name}`)
+      .delete(`http://localhost:8000/api/songs/${name}/`)
       .then(res => this.refreshList());
     if (songWithYearList.length === 1){
       axios
-      .delete(`http://localhost:8000/api/years/${year}`)
+      .delete(`http://localhost:8000/api/years/${year}/`)
       .then(res => this.refreshList());
+    }
+  }
+
+  handleSongEdit(e){
+    e.preventDefault()
+    const formData = new FormData(e.target)
+    var inputArtist = formData.get("artist")
+    var inputYear = parseInt(formData.get("year"))
+    var inputGenre = formData.get("genre")
+    var currentArtist = this.state.activeSong.artist
+    var currentYear = this.state.activeSong.year
+    var currentGenre = this.state.activeSong.genre
+    var finalArtist = ""
+    var finalYear = ""
+    var finalGenre = ""
+    const inputYearList = this.state.yearList.filter(year => year.date === inputYear)
+    const currentYearList = this.state.yearList.filter(year => year.date === currentYear)
+    
+    if ((inputArtist === currentArtist || inputArtist.length === 0) && (inputYear === currentYear || inputYear.length === 0) && (inputGenre === currentGenre || inputGenre.length === 0)){
+      this.setState({editSong: false})
+      return;
+    }
+    else{
+      if(inputArtist !== currentArtist && inputArtist.length !== 0){
+        finalArtist = inputArtist
+      }
+      else{
+        finalArtist = currentArtist
+      }
+      if(inputYear !== currentYear && inputYear.length !== 0){
+        finalYear = inputYear
+      }
+      else{
+        finalYear = currentYear
+      }
+      if(inputGenre !== currentGenre && inputGenre.length !== 0){
+        finalGenre = inputGenre
+      }
+      else{
+        finalGenre = currentGenre
+      }
+      const finalSong = {
+        song_name: this.state.activeSong.song_name,
+        artist: finalArtist,
+        genre: finalGenre,
+        year: finalYear
+      }
+
+      axios
+        .put(`http://localhost:8000/api/songs/${this.state.activeSong.song_name}/`, finalSong)
+        .then(res => this.refreshList())
+        .catch(err => console.log(err));
+      if (inputYearList.length === 0){ //If the year is not in the database yet, creates new year via post and waits before posting new song
+        axios
+          .post(`http://localhost:8000/api/years/`, {date: finalYear, top_genre: finalGenre})
+          .then(res => this.refreshList())
+          .catch(err => console.log(err));
+      }
+      if (currentYearList.length === 1 && finalSong.year !== currentYear){
+        axios
+          .delete(`http://localhost:8000/api/years/${currentYear}/`)
+          .then(res => this.refreshList())
+          .catch(err => console.log(err));
+      }
+      this.setState({editSong: false})
     }
   }
 
@@ -80,7 +145,7 @@ class App extends React.Component {
       this.setState({newSong: false})
       return;
     }
-    else {
+    else{
       if (yearList.length === 0){ //If the year is not in the database yet, creates new year via post and waits before posting new song
         axios
           .post("http://localhost:8000/api/years/", {date: yearNo, top_genre: newGenre})
@@ -110,7 +175,7 @@ class App extends React.Component {
           <td>{song.artist}</td>
           <td>{song.year}</td>
           <td>{song.genre}</td>
-          <td><button onClick={() => this.setState({activeSong: {song_name: song.song_name, artist: song.artist}})}>Edit</button></td>
+          <td><button onClick={() => this.setState({activeSong: {song_name: song.song_name, artist: song.artist, year: song.year, genre: song.genre}, editSong: true})}>Edit</button></td>
           <td><button onClick={() => this.handleDelete(song.song_name, song.year)}>Delete</button></td>
         </tr>)
       
@@ -119,7 +184,20 @@ class App extends React.Component {
 
   renderSongEdit(){ //TODO: implement the part of the page where user edits songs/ratings (currently just prints the song name)
     return(
-      this.state.activeSong.song_name !== "" && <h1>{this.state.activeSong.song_name}</h1>);
+      <><h1>{this.state.editSong && <h5>Selected Song: {this.state.activeSong.song_name}</h5>}</h1>
+        {this.state.editSong && <div>
+          <form onSubmit={e => this.handleSongEdit(e)}>
+            <label htmlFor="songname">Artist:</label><br />
+            <input type="text" id="artist" name="artist" value={this.state.activeSong.artist} required/><br />
+            <label htmlFor="genre">Genre:</label><br />
+            <input type="text" id="genre" name="genre" value={this.state.activeSong.genre} required/><br />
+            <label htmlFor="year">Year:</label><br />
+            <input type="number" id="year" name="year" value={this.state.activeSong.year} required/><br />
+            <input type="submit" />
+          </form>
+          <button onClick={() => this.setState({ editSong: false })}>Cancel</button>
+        </div>}
+      </>);
   }
 
   renderNewSong(){
@@ -131,13 +209,13 @@ class App extends React.Component {
         {this.state.newSong && <div>
           <form onSubmit={e => this.handleNewSongSubmit(e)}>
             <label htmlFor="songname">Song Name:</label><br/>
-            <input type="text" id="songname" name="songname"/><br/>
+            <input type="text" id="songname" name="songname" required/><br/>
             <label htmlFor="songname">Artist:</label><br/>
-            <input type="text" id="artist" name="artist"/><br/>
+            <input type="text" id="artist" name="artist" required/><br/>
             <label htmlFor="genre">Genre:</label><br/>
-            <input type="text" id="genre" name="genre"/><br/>
+            <input type="text" id="genre" name="genre" required/><br/>
             <label htmlFor="year">Year:</label><br/>
-            <input type="number" id="year" name="year"/><br/>
+            <input type="number" id="year" name="year" required/><br/>
             <input type="submit"/>
           </form>
           <button onClick={() => this.setState({newSong: false})}>Cancel</button>
