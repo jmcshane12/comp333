@@ -142,22 +142,34 @@ class App extends React.Component {
         genre: finalGenre,
         year: finalYear
       }
-
-      axios
-        .put(`http://localhost:8000/api/songs/${this.state.activeSong.song_name}/`, finalSong)
-        .then(res => this.refreshList())
-        .catch(err => console.log(err));
+      
       if (inputYearList.length === 0){ //If the year is not in the database yet, creates new year via post and waits before posting new song
         axios
           .post(`http://localhost:8000/api/years/`, {date: finalYear, top_genre: finalGenre})
           .then(res => this.refreshList())
-          .catch(err => console.log(err));
+          .catch(err => console.log(err))
+          .finally(() =>
+            axios
+            .put(`http://localhost:8000/api/songs/${this.state.activeSong.song_name}/`, finalSong)
+            .then(res => this.refreshList())
+            .catch(err => console.log(err)));
       }
-      if (currentYearList.length === 1 && finalSong.year !== currentYear){
+      else if (currentYearList.length === 1 && finalSong.year !== currentYear){
         axios
-          .delete(`http://localhost:8000/api/years/${currentYear}/`)
+          .put(`http://localhost:8000/api/songs/${this.state.activeSong.song_name}/`, finalSong)
           .then(res => this.refreshList())
-          .catch(err => console.log(err));
+          .catch(err => console.log(err))
+          .finally(() => 
+            axios
+            .delete(`http://localhost:8000/api/years/${currentYear}/`)
+            .then(res => this.refreshList())
+            .catch(err => console.log(err)));
+      }
+      else{
+        axios
+          .put(`http://localhost:8000/api/songs/${this.state.activeSong.song_name}/`, finalSong)
+          .then(res => this.refreshList())
+          .catch(err => console.log(err))
       }
       this.setState({editSong: false})
     }
@@ -248,11 +260,11 @@ class App extends React.Component {
         {this.state.editSong && <div>
           <form onSubmit={e => this.handleSongEdit(e)}>
             <label htmlFor="songname">Artist:</label><br />
-            <input type="text" id="artist" name="artist" value={this.state.activeSong.artist} required/><br />
+            <input type="text" id="artist" name="artist" defaultValue={this.state.activeSong.artist} required/><br />
             <label htmlFor="genre">Genre:</label><br />
-            <input type="text" id="genre" name="genre" value={this.state.activeSong.genre} required/><br />
+            <input type="text" id="genre" name="genre" defaultValue={this.state.activeSong.genre} required/><br />
             <label htmlFor="year">Year:</label><br />
-            <input type="number" id="year" name="year" value={this.state.activeSong.year} required/><br />
+            <input type="number" id="year" name="year" defaultValue={this.state.activeSong.year} required/><br />
             <input type="submit" />
           </form>
           <button onClick={() => this.setState({ editSong: false })}>Cancel</button>
