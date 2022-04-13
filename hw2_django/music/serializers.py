@@ -27,4 +27,4 @@ class RatingSerializer(serializers.ModelSerializer):
     model = Rating
     # The id is automatically created as a primary key by our Django model
     # and we can included it here as well.
-    fields = ('user', 'song', 'rating')
+    fields = ('id', 'user', 'song', 'rating')
