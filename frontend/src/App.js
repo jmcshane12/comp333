@@ -8,11 +8,13 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     // The state object is initialized in the constructor of the component.
-    // It has seven properties: activeSong, newSong, editSong, songList, ratingList, yearList, and
+    // It has nine properties: activeSong, newSong, editSong, newRating, editRating, songList, ratingList, yearList, and
     this.state = {
       activeSong: {song_name: "", artist: "", genre: "", year: ""},
       newSong: false,
       editSong: false,
+      newRating: false,
+      editRating: false,
       songList: [],
       ratingList: [],
       yearList: [],
@@ -166,6 +168,33 @@ class App extends React.Component {
     this.setState({newSong: false})
   }
 
+  handleNewRating(e){ //Posts new song from the new song form to database
+    e.preventDefault()
+    const formData = new FormData(e.target)
+    var currentUser = formData.get("user")
+    var songName = this.state.activeSong.song_name
+    var newRatingScore = parseInt(formData.get("rating"))
+    const newRating = {user: currentUser, song: songName, rating: newRatingScore}
+    const songRatingList = this.state.ratingList.filter(rating => rating.song === songName)
+    const userRatingList = this.state.ratingList.filter(rating => rating.user === currentUser && rating.song == songName) 
+    const userExists = this.state.userList.filter(user => user.username === currentUser)
+    const nameList = this.state.songList.filter(song => song.song_name === songName)
+
+    console.log(newRating)
+
+    if (userRatingList.length > 0 || nameList.length === 0 || userExists.length === 0){
+      this.setState({newRating: false})
+      return;
+    }
+    else{ 
+      axios
+        .post("http://localhost:8000/api/ratings/", newRating)
+        .then(res => this.refreshList())
+        .catch(err => console.log(err));
+    }
+    this.setState({newRating: false})
+  }
+
   renderSongTable(){ //Returns the html elements making up the table users view songs from
     return (
       
@@ -177,6 +206,7 @@ class App extends React.Component {
           <td>{song.genre}</td>
           <td><button onClick={() => this.setState({activeSong: {song_name: song.song_name, artist: song.artist, year: song.year, genre: song.genre}, editSong: true})}>Edit</button></td>
           <td><button onClick={() => this.handleDelete(song.song_name, song.year)}>Delete</button></td>
+          <td><button onClick={() => this.setState({activeSong: {song_name: song.song_name, artist: song.artist, year: song.year, genre: song.genre}, newRating: true})}>New Rating</button></td>
         </tr>)
       
     );
@@ -223,6 +253,22 @@ class App extends React.Component {
       </div>
     );
   }
+
+  renderNewRating(){
+    return(
+      <><h1>{this.state.newRating && <h5>Selected Song: {this.state.activeSong.song_name}</h5>}</h1>
+        {this.state.newRating && <div>
+          <form onSubmit={e => this.handleNewRating(e)}>
+            <label htmlFor="user">Username:</label><br />
+            <input type="text" id="user" name="user" required/><br />
+            <label htmlFor="rating">Rating (Must be a number 1-5):</label><br />
+            <input type="number" id="rating" name="rating" min="1" max="5" required/><br />
+            <input type="submit" />
+          </form>
+          <button onClick={() => this.setState({ newRating: false })}>Cancel</button>
+        </div>}
+      </>);
+  }
   
   render() {
     return (
@@ -237,6 +283,7 @@ class App extends React.Component {
                 <th> Genre </th>
                 <th> Edit </th>
                 <th> Delete </th>
+                <th> New Rating </th>
               </tr>
             </thead>
             <tbody>
@@ -249,6 +296,9 @@ class App extends React.Component {
         </div>
         <div id="new-song">
           {this.renderNewSong()}
+        </div>
+        <div id="rating">
+          {this.renderNewRating()}
         </div>
       </div>
     );
