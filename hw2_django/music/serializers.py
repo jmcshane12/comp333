@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import User, Song, Year, Rating
+from django.contrib.auth.models import User
+from .models import Song, Year, Rating
 
 class UserSerializer(serializers.ModelSerializer):
   class Meta:

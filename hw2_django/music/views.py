@@ -2,34 +2,34 @@ from django.shortcuts import render, get_object_or_404
 from django.template import loader
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
-from .models import User, Song, Rating, Year
+from .models import Song, Rating, Year
+from django.contrib.auth.models import User
 from rest_framework import viewsets
+from rest_framework.authentication import TokenAuthentication
 from .serializers import UserSerializer, SongSerializer, YearSerializer, RatingSerializer
 
 class UserView(viewsets.ModelViewSet):
-  # Create a new TodoSerializer instance.
   serializer_class = UserSerializer
-  # Todo.objects.all() retrieves all the Todo objects in the database.
   queryset = User.objects.all()
 
 class SongView(viewsets.ModelViewSet):
-  # Create a new TodoSerializer instance.
   serializer_class = SongSerializer
-  # Todo.objects.all() retrieves all the Todo objects in the database.
   queryset = Song.objects.all()
+  #authentication_classes = (TokenAuthentication, )
 
 class RatingView(viewsets.ModelViewSet):
-  # Create a new TodoSerializer instance.
   serializer_class = RatingSerializer
-  # Todo.objects.all() retrieves all the Todo objects in the database.
   queryset = Rating.objects.all()
+  #authentication_classes = (TokenAuthentication, )
   
 
 class YearView(viewsets.ModelViewSet):
-  # Create a new TodoSerializer instance.
   serializer_class = YearSerializer
-  # Todo.objects.all() retrieves all the Todo objects in the database.
   queryset = Year.objects.all()
+  #authentication_classes = (TokenAuthentication, )
+
+
+
 
 # view for home page
 def index(request):
