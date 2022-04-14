@@ -86,9 +86,6 @@ class App extends React.Component {
       var userRatingValues = Object.values(userRatingList)
       var currentID = userRatingValues[0]['id']
 
-      console.log(userRatingValues)
-      console.log(currentID)
-
       axios
         .delete(`http://localhost:8000/api/ratings/${currentID}/`)
         .then(res => this.refreshList());
@@ -154,7 +151,7 @@ class App extends React.Component {
             .then(res => this.refreshList())
             .catch(err => console.log(err)));
       }
-      else if (currentYearList.length === 1 && finalSong.year !== currentYear){
+      if (currentYearList.length === 1 && finalSong.year !== currentYear){
         axios
           .put(`http://localhost:8000/api/songs/${this.state.activeSong.song_name}/`, finalSong)
           .then(res => this.refreshList())
@@ -233,6 +230,35 @@ class App extends React.Component {
         .catch(err => console.log(err));
     }
     this.setState({newRating: false})
+  }
+
+  handleEditRating(e){ //Posts new song from the new song form to database
+    e.preventDefault()
+    const formData = new FormData(e.target)
+    var currentUser = formData.get("user")
+    var songName = this.state.activeSong.song_name
+    var newRatingScore = parseInt(formData.get("rating"))
+    const newRating = {user: currentUser, song: songName, rating: newRatingScore}
+    const userRatingList = this.state.ratingList.filter(rating => rating.user === currentUser && rating.song === songName) 
+    const userExists = this.state.userList.filter(user => user.username === currentUser)
+    const nameList = this.state.songList.filter(song => song.song_name === songName)
+
+    if (userRatingList.length === 0 || nameList.length === 0 || userExists.length === 0){
+      this.setState({editRating: false})
+      return;
+    }
+    else{ 
+      var userRatingValues = Object.values(userRatingList)
+      var currentID = userRatingValues[0]['id']
+
+      console.log(currentID)
+      
+      axios
+        .put(`http://localhost:8000/api/ratings/${currentID}/`, newRating)
+        .then(res => this.refreshList())
+        .catch(err => console.log(err));
+    }
+    this.setState({editRating: false})
   }
 
   renderSongTable(){ //Returns the html elements making up the table users view songs from
@@ -325,6 +351,22 @@ class App extends React.Component {
         </div>}
       </>);
   }
+
+  renderEditRating(){
+    return(
+      <>{this.state.editRating && <h5>Selected Song: {this.state.activeSong.song_name}</h5>}
+        {this.state.editRating && <div>
+          <form onSubmit={e => this.handleEditRating(e)}>
+            <label htmlFor="user">Username:</label><br />
+            <input type="text" id="user" name="user" required/><br />
+            <label htmlFor="rating">Rating (Must be a number 1-5):</label><br />
+            <input type="number" id="rating" name="rating" min="1" max="5" required/><br />
+            <input type="submit" />
+          </form>
+          <button onClick={() => this.setState({ editRating: false })}>Cancel</button>
+        </div>}
+      </>);
+  }
   
   render() {
     return (
@@ -357,6 +399,9 @@ class App extends React.Component {
         </div>
         <div id="new-rating">
           {this.renderNewRating()}
+        </div>
+        <div id="edit-rating">
+          {this.renderEditRating()}
         </div>
         <div id="delete-rating">
           {this.renderDeleteRating()}
