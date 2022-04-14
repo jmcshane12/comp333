@@ -285,7 +285,7 @@ class App extends React.Component {
       <><h1>{this.state.editSong && <h5>Selected Song: {this.state.activeSong.song_name}</h5>}</h1>
         {this.state.editSong && <div>
           <form onSubmit={e => this.handleSongEdit(e)}>
-            <label htmlFor="songname">Artist:</label><br />
+            <label htmlFor="songname">Artist:</label><br /> {/* Is  htmlFor="songname" correct here? */}
             <input type="text" id="artist" name="artist" defaultValue={this.state.activeSong.artist} required/><br />
             <label htmlFor="genre">Genre:</label><br />
             <input type="text" id="genre" name="genre" defaultValue={this.state.activeSong.genre} required/><br />
