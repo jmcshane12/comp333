@@ -261,6 +261,13 @@ class App extends React.Component {
     this.setState({editRating: false})
   }
 
+  getAverageRating(songName){
+    const songRatingList = this.state.ratingList.filter(rating => rating.song === songName) 
+    const sumSongRatings = songRatingList.reduce((sum, currentRating) => sum = sum + currentRating.rating, 0)
+
+    return((sumSongRatings/songRatingList.length).toFixed(2) + " (" + songRatingList.length + ")")
+  }
+
   renderSongTable(){ //Returns the html elements making up the table users view songs from
     return (
       
@@ -275,6 +282,7 @@ class App extends React.Component {
           <td><button onClick={() => this.setState({activeSong: {song_name: song.song_name, artist: song.artist, year: song.year, genre: song.genre}, newRating: true})}>New Rating</button></td>
           <td><button onClick={() => this.setState({activeSong: {song_name: song.song_name, artist: song.artist, year: song.year, genre: song.genre}, editRating: true})}>Edit Rating</button></td>
           <td><button onClick={() => this.setState({activeSong: {song_name: song.song_name, artist: song.artist, year: song.year, genre: song.genre}, deleteRating: true})}>Delete Rating</button></td>
+          <td>{this.getAverageRating(song.song_name)}</td>
         </tr>)
       
     );
@@ -384,6 +392,7 @@ class App extends React.Component {
                 <th> New Rating </th>
                 <th> Edit Rating </th>
                 <th> Delete Rating </th>
+                <th> Average Rating </th>
               </tr>
             </thead>
             <tbody>
