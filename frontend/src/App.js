@@ -1,3 +1,4 @@
+
 import logo from './logo.svg';
 import './App.css';
 import React from 'react';
@@ -66,10 +67,10 @@ class App extends React.Component {
     e.preventDefault()
     var currentUser = this.props.user
     var songName = this.state.activeSong.song_name
-    const userRatingList = this.state.ratingList.filter(rating => rating.user === currentUser && rating.song === songName) 
+    const userRatingList = this.state.ratingList.filter(rating => rating.user === currentUser && rating.song === songName)
     const nameList = this.state.songList.filter(song => song.song_name === songName)
 
-    if (userRatingList.length === 0 || nameList.length === 0 ){
+    if (userRatingList.length === 0 || nameList.length === 0){
       this.setState({deleteRating: false})
       return;
     }
@@ -260,11 +261,11 @@ class App extends React.Component {
           <td>{song.artist}</td>
           <td>{song.year}</td>
           <td>{song.genre}</td>
-          <td><button onClick={() => this.setState({activeSong: {song_name: song.song_name, artist: song.artist, year: song.year, genre: song.genre}, editSong: true})}>Edit Song</button></td>
+          <td><button onClick={() => this.setState({activeSong: {song_name: song.song_name, artist: song.artist, year: song.year, genre: song.genre}, editSong: true, newSong: false, newRating: false, editRating: false, deleteRating: false,})}>Edit Song</button></td>
           <td><button onClick={() => this.handleDelete(song.song_name, song.year)}>Delete Song</button></td>
-          <td><button onClick={() => this.setState({activeSong: {song_name: song.song_name, artist: song.artist, year: song.year, genre: song.genre}, newRating: true})}>New Rating</button></td>
-          <td><button onClick={() => this.setState({activeSong: {song_name: song.song_name, artist: song.artist, year: song.year, genre: song.genre}, editRating: true})}>Edit Rating</button></td>
-          <td><button onClick={() => this.setState({activeSong: {song_name: song.song_name, artist: song.artist, year: song.year, genre: song.genre}, deleteRating: true})}>Delete Rating</button></td>
+          <td><button onClick={() => this.setState({activeSong: {song_name: song.song_name, artist: song.artist, year: song.year, genre: song.genre}, newRating: true, newSong: false, editSong: false, editRating: false, deleteRating: false,})}>New Rating</button></td>
+          <td><button onClick={() => this.setState({activeSong: {song_name: song.song_name, artist: song.artist, year: song.year, genre: song.genre}, editRating: true, newSong: false, editSong: false, newRating: false, deleteRating: false,})}>Edit Rating</button></td>
+          <td><button onClick={() => this.setState({activeSong: {song_name: song.song_name, artist: song.artist, year: song.year, genre: song.genre}, deleteRating: true, newSong: false, editSong: false, newRating: false, editRating: false,})}>Delete Rating</button></td>
         </tr>)
       
     );
@@ -291,10 +292,10 @@ class App extends React.Component {
   renderNewSong(){
     return(
       <div>
-        {!this.state.newSong && <div>
+        {!(this.state.newSong || this.state.editRating || this.state.editSong || this.state.newRating) && <div>
           <button onClick={() => this.setState({newSong: true})}>Add a Song</button>
         </div>}
-        {this.state.newSong && <div>
+        {!(!this.state.newSong || this.state.editRating || this.state.editSong || this.state.newRating)&& <div>
           <form onSubmit={e => this.handleNewSongSubmit(e)}>
             <label htmlFor="songname">Song Name:</label><br/>
             <input type="text" id="songname" name="songname" required/><br/>
