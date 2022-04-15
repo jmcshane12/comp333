@@ -72,6 +72,7 @@ class App extends React.Component {
 
     if (userRatingList.length === 0 || nameList.length === 0){
       this.setState({deleteRating: false})
+      alert("No rating for this user found to delete.")
       return;
     }
     else
@@ -105,6 +106,7 @@ class App extends React.Component {
     
     if ((inputArtist === currentArtist || inputArtist.length === 0) && (inputYear === currentYear || inputYear.length === 0) && (inputGenre === currentGenre || inputGenre.length === 0)){
       this.setState({editSong: false})
+      alert("Please make sure that you edit at least one field.")
       return;
     }
     else{
@@ -178,6 +180,7 @@ class App extends React.Component {
 
     if (nameList.length > 0){
       this.setState({newSong: false})
+      alert("This song already exists, but you may use 'Edit Song' to edit it.")
       return;
     }
     else{
@@ -213,6 +216,7 @@ class App extends React.Component {
 
     if (userRatingList.length > 0 || nameList.length === 0 ){
       this.setState({newRating: false})
+      alert("Rating already exists for this user, but you may use 'Edit Rating' to change it.")
       return;
     }
     else{ 
@@ -236,6 +240,7 @@ class App extends React.Component {
 
     if (userRatingList.length === 0 || nameList.length === 0){
       this.setState({editRating: false})
+      alert("No rating exists yet for this user.")
       return;
     }
     else{ 
@@ -252,6 +257,13 @@ class App extends React.Component {
     this.setState({editRating: false})
   }
 
+  getAverageRating(songName){
+    const songRatingList = this.state.ratingList.filter(rating => rating.song === songName) 
+    const sumSongRatings = songRatingList.reduce((sum, currentRating) => sum = sum + currentRating.rating, 0)
+
+    return((sumSongRatings/songRatingList.length).toFixed(2) + " (" + songRatingList.length + ")")
+  }
+
   renderSongTable(){ //Returns the html elements making up the table users view songs from
     return (
       
@@ -266,6 +278,7 @@ class App extends React.Component {
           <td><button onClick={() => this.setState({activeSong: {song_name: song.song_name, artist: song.artist, year: song.year, genre: song.genre}, newRating: true, newSong: false, editSong: false, editRating: false, deleteRating: false,})}>New Rating</button></td>
           <td><button onClick={() => this.setState({activeSong: {song_name: song.song_name, artist: song.artist, year: song.year, genre: song.genre}, editRating: true, newSong: false, editSong: false, newRating: false, deleteRating: false,})}>Edit Rating</button></td>
           <td><button onClick={() => this.setState({activeSong: {song_name: song.song_name, artist: song.artist, year: song.year, genre: song.genre}, deleteRating: true, newSong: false, editSong: false, newRating: false, editRating: false,})}>Delete Rating</button></td>
+          <td>{this.getAverageRating(song.song_name)}</td>
         </tr>)
       
     );
@@ -369,6 +382,7 @@ class App extends React.Component {
                 <th> New Rating </th>
                 <th> Edit Rating </th>
                 <th> Delete Rating </th>
+                <th> Average Rating </th>
               </tr>
             </thead>
             <tbody>
