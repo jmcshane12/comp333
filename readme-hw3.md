@@ -1,4 +1,4 @@
-##1. 
+### 1. ### 
 
 If Django is not installed on your computer, run the following code:
 
