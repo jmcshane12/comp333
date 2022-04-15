@@ -1,4 +1,3 @@
-
 import logo from './logo.svg';
 import './App.css';
 import React from 'react';
@@ -19,7 +18,6 @@ class App extends React.Component {
       songList: [],
       ratingList: [],
       yearList: [],
-      userList: []
     };
   }
   // The `componentDidMount()` method is called after the component is rendered,
@@ -50,10 +48,6 @@ class App extends React.Component {
       .get("http://localhost:8000/api/years/")
       .then(res => this.setState({ yearList: res.data }))
       .catch(err => console.log(err));
-    axios
-      .get("http://localhost:8000/api/users/")
-      .then(res => this.setState({ userList: res.data }))
-      .catch(err => console.log(err));
   };
 
   handleDelete(name, year){ //Deletes song from database; deletes year from database if only one song with said year exists
@@ -68,16 +62,14 @@ class App extends React.Component {
     }
   }
 
-  handleDeleteRating(e){ //Posts new song from the new song form to database
+  handleDeleteRating(e){
     e.preventDefault()
-    const formData = new FormData(e.target)
-    var currentUser = formData.get("user")
+    var currentUser = this.props.user
     var songName = this.state.activeSong.song_name
     const userRatingList = this.state.ratingList.filter(rating => rating.user === currentUser && rating.song === songName) 
-    const userExists = this.state.userList.filter(user => user.username === currentUser)
     const nameList = this.state.songList.filter(song => song.song_name === songName)
 
-    if (userRatingList.length === 0 || nameList.length === 0 || userExists.length === 0){
+    if (userRatingList.length === 0 || nameList.length === 0 ){
       this.setState({deleteRating: false})
       return;
     }
@@ -211,15 +203,14 @@ class App extends React.Component {
   handleNewRating(e){ //Posts new song from the new song form to database
     e.preventDefault()
     const formData = new FormData(e.target)
-    var currentUser = formData.get("user")
+    var currentUser = this.props.user
     var songName = this.state.activeSong.song_name
     var newRatingScore = parseInt(formData.get("rating"))
     const newRating = {user: currentUser, song: songName, rating: newRatingScore}
     const userRatingList = this.state.ratingList.filter(rating => rating.user === currentUser && rating.song === songName) 
-    const userExists = this.state.userList.filter(user => user.username === currentUser)
     const nameList = this.state.songList.filter(song => song.song_name === songName)
 
-    if (userRatingList.length > 0 || nameList.length === 0 || userExists.length === 0){
+    if (userRatingList.length > 0 || nameList.length === 0 ){
       this.setState({newRating: false})
       return;
     }
@@ -235,15 +226,14 @@ class App extends React.Component {
   handleEditRating(e){ //Posts new song from the new song form to database
     e.preventDefault()
     const formData = new FormData(e.target)
-    var currentUser = formData.get("user")
+    var currentUser = this.props.user
     var songName = this.state.activeSong.song_name
     var newRatingScore = parseInt(formData.get("rating"))
     const newRating = {user: currentUser, song: songName, rating: newRatingScore}
     const userRatingList = this.state.ratingList.filter(rating => rating.user === currentUser && rating.song === songName) 
-    const userExists = this.state.userList.filter(user => user.username === currentUser)
     const nameList = this.state.songList.filter(song => song.song_name === songName)
 
-    if (userRatingList.length === 0 || nameList.length === 0 || userExists.length === 0){
+    if (userRatingList.length === 0 || nameList.length === 0){
       this.setState({editRating: false})
       return;
     }
@@ -327,8 +317,6 @@ class App extends React.Component {
       <>{this.state.newRating && <h5>Selected Song: {this.state.activeSong.song_name}</h5>}
         {this.state.newRating && <div>
           <form onSubmit={e => this.handleNewRating(e)}>
-            <label htmlFor="user">Username:</label><br />
-            <input type="text" id="user" name="user" required/><br />
             <label htmlFor="rating">Rating (Must be a number 1-5):</label><br />
             <input type="number" id="rating" name="rating" min="1" max="5" required/><br />
             <input type="submit" />
@@ -343,8 +331,6 @@ class App extends React.Component {
       <>{this.state.deleteRating && <h5>Selected Song: {this.state.activeSong.song_name}</h5>}
         {this.state.deleteRating && <div>
           <form onSubmit={e => this.handleDeleteRating(e)}>
-            <label htmlFor="user">Username:</label><br />
-            <input type="text" id="user" name="user" required/><br />
             <input type="submit" />
           </form>
           <button onClick={() => this.setState({ deleteRating: false })}>Cancel</button>
@@ -357,8 +343,6 @@ class App extends React.Component {
       <>{this.state.editRating && <h5>Selected Song: {this.state.activeSong.song_name}</h5>}
         {this.state.editRating && <div>
           <form onSubmit={e => this.handleEditRating(e)}>
-            <label htmlFor="user">Username:</label><br />
-            <input type="text" id="user" name="user" required/><br />
             <label htmlFor="rating">Rating (Must be a number 1-5):</label><br />
             <input type="number" id="rating" name="rating" min="1" max="5" required/><br />
             <input type="submit" />
