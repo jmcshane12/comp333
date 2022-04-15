@@ -79,6 +79,7 @@ class App extends React.Component {
 
     if (userRatingList.length === 0 || nameList.length === 0 || userExists.length === 0){
       this.setState({deleteRating: false})
+      alert("No rating for this user found to delete.")
       return;
     }
     else
@@ -112,6 +113,7 @@ class App extends React.Component {
     
     if ((inputArtist === currentArtist || inputArtist.length === 0) && (inputYear === currentYear || inputYear.length === 0) && (inputGenre === currentGenre || inputGenre.length === 0)){
       this.setState({editSong: false})
+      alert("Please make sure that you edit at least one field.")
       return;
     }
     else{
@@ -185,6 +187,7 @@ class App extends React.Component {
 
     if (nameList.length > 0){
       this.setState({newSong: false})
+      alert("This song already exists, but you may use 'Edit Song' to edit it.")
       return;
     }
     else{
@@ -221,6 +224,7 @@ class App extends React.Component {
 
     if (userRatingList.length > 0 || nameList.length === 0 || userExists.length === 0){
       this.setState({newRating: false})
+      alert("Rating already exists for this user, but you may use 'Edit Rating' to change it.")
       return;
     }
     else{ 
@@ -245,6 +249,7 @@ class App extends React.Component {
 
     if (userRatingList.length === 0 || nameList.length === 0 || userExists.length === 0){
       this.setState({editRating: false})
+      alert("No rating exists yet for this user.")
       return;
     }
     else{ 
