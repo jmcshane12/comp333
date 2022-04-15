@@ -15,18 +15,18 @@ class UserView(viewsets.ModelViewSet):
 class SongView(viewsets.ModelViewSet):
   serializer_class = SongSerializer
   queryset = Song.objects.all()
-  #authentication_classes = (TokenAuthentication, )
+  authentication_classes = (TokenAuthentication, )
 
 class RatingView(viewsets.ModelViewSet):
   serializer_class = RatingSerializer
   queryset = Rating.objects.all()
-  #authentication_classes = (TokenAuthentication, )
+  authentication_classes = (TokenAuthentication, )
   
 
 class YearView(viewsets.ModelViewSet):
   serializer_class = YearSerializer
   queryset = Year.objects.all()
-  #authentication_classes = (TokenAuthentication, )
+  authentication_classes = (TokenAuthentication, )
 
 
 
