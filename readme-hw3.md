@@ -1,2 +1,9 @@
-1. Make sure that React, Node.js and Django are installed properly on your computer.
-2. 
+##1. 
+
+If Django is not installed on your computer, run the following code:
+
+```bash
+pip3 install django
+```
+
+3. 
