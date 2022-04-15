@@ -2,15 +2,20 @@ from django.shortcuts import render, get_object_or_404
 from django.template import loader
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
-from .models import Song, Rating, Year
+from .models import Song, Rating, Year, Reg
 from django.contrib.auth.models import User
 from rest_framework import viewsets
 from rest_framework.authentication import TokenAuthentication
-from .serializers import UserSerializer, SongSerializer, YearSerializer, RatingSerializer
+from .serializers import UserSerializer, SongSerializer, YearSerializer, RatingSerializer, RegSerializer
 
 class UserView(viewsets.ModelViewSet):
   serializer_class = UserSerializer
   queryset = User.objects.all()
+
+class RegView(viewsets.ModelViewSet):
+  serializer_class = RegSerializer
+  queryset = Reg.objects.all()
+  authentication_classes = (TokenAuthentication, )
 
 class SongView(viewsets.ModelViewSet):
   serializer_class = SongSerializer

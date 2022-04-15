@@ -24,6 +24,7 @@ router.register(r'songs', views.SongView, 'songs')
 router.register(r'years', views.YearView, 'years')
 router.register(r'ratings', views.RatingView, 'ratings')
 router.register(r'users', views.UserView, 'users')
+router.register(r'reg', views.RegView, 'reg')
 
 urlpatterns = [
     path('music/', include('music.urls')),

@@ -23,7 +23,7 @@ class Login extends React.Component {
         axios
         .post(`http://localhost:8000/auth/`, {username: usr, password: pwrd})
         .then(res => this.setState({ view_login : false, view_app : true, auth_token : res.data.token, user : usr}))
-        .catch(err => console.log(err))
+        .catch(err => console.log(err), alert('The Username or Password you entered is incorrect'))
     }
 
     handleReg(e){
@@ -33,9 +33,12 @@ class Login extends React.Component {
         var pwrd = formData.get("reg_password")
         axios
         .post(`http://localhost:8000/api/users/`, {username: usr, password: pwrd})
-        .then(res => this.setState({ view_login : true, view_reg : false, auth_token : res.data.token}),
-                     alert('Registration Successful. Please sign in to continue.'))
-        .catch(err => console.log(err))
+        .then(res => axios
+                      .post(`http://localhost:8000/api/reg/`, {username: usr})
+                      .then(result => this.setState({ view_login : true, view_reg : false, auth_token : res.data.token}))
+                      .catch(error => console.log(error)), alert('Registration Successful. Please sign in to continue.'))
+        .catch(err => console.log(err), alert('That username is already taken'))
+
     }
 
 

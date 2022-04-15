@@ -1,5 +1,3 @@
-
-import logo from './logo.svg';
 import './App.css';
 import React from 'react';
 import axios from "axios";
@@ -19,6 +17,7 @@ class App extends React.Component {
       songList: [],
       ratingList: [],
       yearList: [],
+      user_id : null
     };
   }
   // The `componentDidMount()` method is called after the component is rendered,
@@ -37,6 +36,7 @@ class App extends React.Component {
     // You can test these requests to your API using Postman.
     // We are using async calls here. Refer to the JavaScript
     // tutorial for how they work.
+    
     axios
       .get("http://localhost:8000/api/songs/", { headers: { 'Authorization' : 'Token ' + this.props.token } })
       .then(res => this.setState({ songList: res.data }))
@@ -410,10 +410,6 @@ class App extends React.Component {
   }
 }
 
-
-function App6(){
-  return (<h1>I hate react</h1>);
-}
 
 export default App;
 

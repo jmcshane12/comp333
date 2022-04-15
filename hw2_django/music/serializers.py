@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Song, Year, Rating
+from .models import Song, Year, Rating, Reg
+from rest_framework.response import Response
 
 class UserSerializer(serializers.ModelSerializer):
   class Meta:
@@ -10,6 +11,10 @@ class UserSerializer(serializers.ModelSerializer):
   def create(self, validated_data):
         return User.objects.create_user(**validated_data)
 
+class RegSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = Reg
+    fields = ('username',)
 
 class SongSerializer(serializers.ModelSerializer):
   class Meta:
