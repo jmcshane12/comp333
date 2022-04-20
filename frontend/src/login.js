@@ -36,8 +36,8 @@ class Login extends React.Component {
         .post(`http://localhost:8000/api/users/`, {username: usr, password: pwrd})
         .then(res => axios
                       .post(`http://localhost:8000/api/reg/`, {username: usr})
-                      .then(result => this.setState({ view_login : true, view_reg : false, auth_token : res.data.token}))
-                      .catch(error => console.log(error)), alert('Registration Successful. Please sign in to continue.'))
+                      .then(result => this.setState({ view_login : true, view_reg : false, auth_token : res.data.token}), alert('Registration Successful. Please sign in to continue.'))
+                      .catch(error => console.log(error)))
         .catch(err => console.log(err))
 
     }
