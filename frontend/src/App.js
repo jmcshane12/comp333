@@ -17,7 +17,8 @@ class App extends React.Component {
       songList: [],
       ratingList: [],
       yearList: [],
-      user_id : null
+      user_id : null,
+      api_url : 'https://comp333hw4backend.herokuapp.com/api/',
     };
   }
   // The `componentDidMount()` method is called after the component is rendered,
@@ -38,15 +39,15 @@ class App extends React.Component {
     // tutorial for how they work.
     
     axios
-      .get("http://localhost:8000/api/songs/", { headers: { 'Authorization' : 'Token ' + this.props.token } })
+      .get(this.state.api_url+"songs/", { headers: { 'Authorization' : 'Token ' + this.props.token } })
       .then(res => this.setState({ songList: res.data }))
       .catch(err => console.log(err));
     axios
-      .get("http://localhost:8000/api/ratings/", { headers: { 'Authorization' : 'Token ' + this.props.token } })
+      .get(this.state.api_url+"ratings/", { headers: { 'Authorization' : 'Token ' + this.props.token } })
       .then(res => this.setState({ ratingList: res.data }))
       .catch(err => console.log(err));
     axios
-      .get("http://localhost:8000/api/years/", { headers: { 'Authorization' : 'Token ' + this.props.token } })
+      .get(this.state.api_url+"years/", { headers: { 'Authorization' : 'Token ' + this.props.token } })
       .then(res => this.setState({ yearList: res.data }))
       .catch(err => console.log(err));
   };
@@ -54,11 +55,11 @@ class App extends React.Component {
   handleDelete(name, year){ //Deletes song from database; deletes year from database if only one song with said year exists
     const songWithYearList = this.state.songList.filter(song => song.year === year)
     axios
-      .delete(`http://localhost:8000/api/songs/${name}/`, { headers: { 'Authorization' : 'Token ' + this.props.token } })
+      .delete(this.state.api_url+`songs/${name}/`, { headers: { 'Authorization' : 'Token ' + this.props.token } })
       .then(res => this.refreshList());
     if (songWithYearList.length === 1){
       axios
-      .delete(`http://localhost:8000/api/years/${year}/`, { headers: { 'Authorization' : 'Token ' + this.props.token } })
+      .delete(this.state.api_url+`years/${year}/`, { headers: { 'Authorization' : 'Token ' + this.props.token } })
       .then(res => this.refreshList());
     }
   }
@@ -81,7 +82,7 @@ class App extends React.Component {
       var currentID = userRatingValues[0]['id']
 
       axios
-        .delete(`http://localhost:8000/api/ratings/${currentID}/`, { headers: { 'Authorization' : 'Token ' + this.props.token } })
+        .delete(this.state.api_url+`ratings/${currentID}/`, { headers: { 'Authorization' : 'Token ' + this.props.token } })
         .then(res => this.refreshList());
 
       this.setState({deleteRating: false})
@@ -137,29 +138,29 @@ class App extends React.Component {
       
       if (inputYearList.length === 0){ //If the year is not in the database yet, creates new year via post and waits before posting new song
         axios
-          .post(`http://localhost:8000/api/years/`, {date: finalYear, top_genre: finalGenre}, { headers: { 'Authorization' : 'Token ' + this.props.token } })
+          .post(this.state.api_url+"years/", {date: finalYear, top_genre: finalGenre}, { headers: { 'Authorization' : 'Token ' + this.props.token } })
           .then(res => this.refreshList())
           .catch(err => console.log(err))
           .finally(() =>
             axios
-            .put(`http://localhost:8000/api/songs/${this.state.activeSong.song_name}/`, finalSong, { headers: { 'Authorization' : 'Token ' + this.props.token } })
+            .put(this.state.api_url+`songs/${this.state.activeSong.song_name}/`, finalSong, { headers: { 'Authorization' : 'Token ' + this.props.token } })
             .then(res => this.refreshList())
             .catch(err => console.log(err)));
       }
       if (currentYearList.length === 1 && finalSong.year !== currentYear){
         axios
-          .put(`http://localhost:8000/api/songs/${this.state.activeSong.song_name}/`, finalSong, { headers: { 'Authorization' : 'Token ' + this.props.token } })
+          .put(this.state.api_url+`songs/${this.state.activeSong.song_name}/`, finalSong, { headers: { 'Authorization' : 'Token ' + this.props.token } })
           .then(res => this.refreshList())
           .catch(err => console.log(err))
           .finally(() => 
             axios
-            .delete(`http://localhost:8000/api/years/${currentYear}/`, { headers: { 'Authorization' : 'Token ' + this.props.token } })
+            .delete(this.state.api_url+`years/${currentYear}/`, { headers: { 'Authorization' : 'Token ' + this.props.token } })
             .then(res => this.refreshList())
             .catch(err => console.log(err)));
       }
       else{
         axios
-          .put(`http://localhost:8000/api/songs/${this.state.activeSong.song_name}/`, finalSong, { headers: { 'Authorization' : 'Token ' + this.props.token } })
+          .put(this.state.api_url+`songs/${this.state.activeSong.song_name}/`, finalSong, { headers: { 'Authorization' : 'Token ' + this.props.token } })
           .then(res => this.refreshList())
           .catch(err => console.log(err))
       }
@@ -186,17 +187,17 @@ class App extends React.Component {
     else{
       if (yearList.length === 0){ //If the year is not in the database yet, creates new year via post and waits before posting new song
         axios
-          .post("http://localhost:8000/api/years/", {date: yearNo, top_genre: newGenre}, { headers: { 'Authorization' : 'Token ' + this.props.token } })
+          .post(this.state.api_url+"years/", {date: yearNo, top_genre: newGenre}, { headers: { 'Authorization' : 'Token ' + this.props.token } })
           .then(res => this.refreshList())
           .catch(err => console.log(err))
           .finally(() => axios
-            .post("http://localhost:8000/api/songs/", newSong, { headers: { 'Authorization' : 'Token ' + this.props.token } })
+            .post(this.state.api_url+"songs/", newSong, { headers: { 'Authorization' : 'Token ' + this.props.token } })
             .then(res => this.refreshList())
             .catch(err => console.log(err)));
       }
       else{ 
         axios
-          .post("http://localhost:8000/api/songs/", newSong, { headers: { 'Authorization' : 'Token ' + this.props.token } })
+          .post(this.state.api_url+"songs/", newSong, { headers: { 'Authorization' : 'Token ' + this.props.token } })
           .then(res => this.refreshList())
           .catch(err => console.log(err));
       }
@@ -221,7 +222,7 @@ class App extends React.Component {
     }
     else{ 
       axios
-        .post("http://localhost:8000/api/ratings/", newRating, { headers: { 'Authorization' : 'Token ' + this.props.token } })
+        .post(this.state.api_url+"ratings/", newRating, { headers: { 'Authorization' : 'Token ' + this.props.token } })
         .then(res => this.refreshList())
         .catch(err => console.log(err));
     }
@@ -250,7 +251,7 @@ class App extends React.Component {
       console.log(currentID)
       
       axios
-        .put(`http://localhost:8000/api/ratings/${currentID}/`, newRating, { headers: { 'Authorization' : 'Token ' + this.props.token } })
+        .put(this.state.api_url+`ratings/${currentID}/`, newRating, { headers: { 'Authorization' : 'Token ' + this.props.token } })
         .then(res => this.refreshList())
         .catch(err => console.log(err));
     }

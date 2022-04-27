@@ -13,6 +13,7 @@ class Login extends React.Component {
         view_app : false,
         auth_token : null,
         user : null,
+        url : 'https://comp333hw4backend.herokuapp.com/',
       };
     }
 
@@ -22,7 +23,7 @@ class Login extends React.Component {
         var usr = formData.get("username")
         var pwrd = formData.get("password")
         axios
-        .post(`http://localhost:8000/auth/`, {username: usr, password: pwrd})
+        .post(this.state.url+`auth/`, {username: usr, password: pwrd})
         .then(res => this.setState({ view_login : false, view_app : true, auth_token : res.data.token, user : usr}))
         .catch(err => console.log(err))
     }
@@ -33,9 +34,9 @@ class Login extends React.Component {
         var usr = formData.get("reg_username")
         var pwrd = formData.get("reg_password")
         axios
-        .post(`http://localhost:8000/api/users/`, {username: usr, password: pwrd})
+        .post(this.state.url+`api/users/`, {username: usr, password: pwrd})
         .then(res => axios
-                      .post(`http://localhost:8000/api/reg/`, {username: usr})
+                      .post(this.state.url+`api/reg/`, {username: usr})
                       .then(result => this.setState({ view_login : true, view_reg : false, auth_token : res.data.token}), alert('Registration Successful. Please sign in to continue.'))
                       .catch(error => console.log(error)))
         .catch(err => console.log(err))
