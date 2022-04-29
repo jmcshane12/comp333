@@ -25,7 +25,7 @@ class Login extends React.Component {
         axios
         .post(this.state.url+`auth/`, {username: usr, password: pwrd})
         .then(res => this.setState({ view_login : false, view_app : true, auth_token : res.data.token, user : usr}))
-        .catch(err => console.log(err))
+        .catch(err => alert('Invalid Username or Password. If you do not have an account, please register first. '))
     }
 
     handleReg(e){
